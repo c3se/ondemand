@@ -1,4 +1,5 @@
 require 'find'
+require 'etc'
 
 class Workflow < ApplicationRecord
   has_many :jobs, class_name: "Job", dependent: :destroy
@@ -208,8 +209,21 @@ class Workflow < ApplicationRecord
   # Returns the optional user-entered account string
   #
   # @return [String, nil] the account string or nil if blank
-  def account
-    super.strip unless super.blank?
+  # def account
+  #   super.strip unless super.blank?
+  # end
+
+  def accounts_by_user
+    IO.popen('cat /home/ood/sacctmgr.txt') { |cmd|
+      cmd.map { |line|
+        acc = line.split('|')
+        acc[0] if acc[2] == Etc.getlogin
+      }.compact
+    }
+  end
+
+  def accounts
+    accounts_by_user.map { |x| [x, x] }
   end
 
   # Define tasks to do after staging template directory typically copy over

@@ -4,9 +4,20 @@
 
 API at: https://github.com/bootstrap-ruby/rails-bootstrap-forms %>
 
-<%= f.text_field :account,
-        label: t('jobcomposer.options_account_title'),
-        help: t('jobcomposer.options_account_help') if Configuration.show_job_options_account_field?
+<%# f.select :account,
+        grouped_options_for_select(workflow.accounts, workflow.account),
+        { label: "Account" },
+        { class: "selectpicker", id: "workflow_account" }
+%>
+
+<%= f.select :account,
+        @workflow.accounts, {
+                label: "Account:",
+                :include_blank => false
+        }, {
+                class: "selectpicker",
+                id: "account_select"
+        }
 %>
 
 <% if Workflow.show_job_arrays? %>
