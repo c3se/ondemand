@@ -65,12 +65,26 @@ RUN echo -e 'Defaults:apache !requiretty, !authenticate \n\
 Defaults:apache env_keep += "NGINX_STAGE_* OOD_*" \n\
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage' >/etc/sudoers.d/ood
 
+# sssd for LDAP user database support
+RUN dnf install -y sssd
+
+# Install local slurm packages
+RUN printf '[c3se-slurm]\nbaseurl = http://hermes-21/repo/centos8/alvis/slurm\nenabled = 1\ngpgcheck = 0\nname = c3se-slurm' >  /etc/yum.repos.d/c3se.repo
+RUN dnf install -y slurm
+
+# Install shibboleth and mod_shib
+RUN printf '[shibboleth]\ntype=rpm-md\nmirrorlist=https://shibboleth.net/cgi-bin/mirrorlist.cgi/CentOS_8\nenabled = 1\ngpgcheck = 0\nname=Shibboleth (CentOS_8)' >  /etc/yum.repos.d/shibboleth.repo
+RUN dnf install -y shibboleth.x86_64
+
+# Clean dnf cache
+RUN dnf clean all && rm -rf /var/cache/dnf/*
+
 # run the OOD executables to setup the env
 RUN /opt/ood/ood-portal-generator/sbin/update_ood_portal
 RUN /opt/ood/nginx_stage/sbin/update_nginx_stage
 RUN echo $VERSION > /opt/ood/VERSION
 # this one bc centos:8 doesn't generate localhost cert
-RUN /usr/libexec/httpd-ssl-gencerts
+#RUN /usr/libexec/httpd-ssl-gencerts # we bind mount these
 
 EXPOSE 8080
 EXPOSE 5556
