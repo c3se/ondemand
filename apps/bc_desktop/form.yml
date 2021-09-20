@@ -4,7 +4,27 @@ attributes:
   bc_vnc_idle: 0
   bc_vnc_resolution:
     required: true
-  node_type: null
+  bc_num_slots: 1
+  node_type:
+    widget: "select"
+    label: "Node type"
+    options:
+      - [ "1xT4", "1xT4", data-option-for-alvis: true ]
+      - [ "2xT4", "2xT4", data-option-for-alvis: true ]
+      - [ "3xT4", "3xT4", data-option-for-alvis: true ]
+      - [ "4xT4", "4xT4", data-option-for-alvis: true ]
+      - [ "5xT4", "5xT4", data-option-for-alvis: true ]
+      - [ "6xT4", "6xT4", data-option-for-alvis: true ]
+      - [ "7xT4", "7xT4", data-option-for-alvis: true ]
+      - [ "8xT4", "8xT4", data-option-for-alvis: true ]
+      - [ "1xV100", "1xV100", data-option-for-alvis: true ]
+      - [ "2xV100", "2xV100", data-option-for-alvis: true ]
+      - [ "3xV100", "3xV100", data-option-for-alvis: true ]
+      - [ "4xV100", "4xV100", data-option-for-alvis: true ]
+      - [ "1xA100", "1xA100", data-option-for-alvis: true ]
+      - [ "2xA100", "2xA100", data-option-for-alvis: true ]
+      - [ "3xA100", "3xA100", data-option-for-alvis: true ]
+      - [ "4xA100", "4xA100", data-option-for-alvis: true ]
 
 form:
   - bc_vnc_idle

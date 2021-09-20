@@ -1,3 +1,47 @@
+<%-
+  base_slurm_args = []
+
+  slurm_args = case node_type
+              when "1xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:1"]
+              when "2xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:2"]
+              when "3xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:3"]
+              when "4xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:4"]
+              when "5xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:5"]
+              when "6xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:6"]
+              when "7xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:7"]
+              when "8xT4"
+                base_slurm_args + ["--gpus-per-node", "T4:8"]
+              when "1xV100"
+                base_slurm_args + ["--gpus-per-node", "V100:1"]
+              when "2xV100"
+                base_slurm_args + ["--gpus-per-node", "V100:2"]
+              when "3xV100"
+                base_slurm_args + ["--gpus-per-node", "V100:3"]
+              when "4xV100"
+                base_slurm_args + ["--gpus-per-node", "V100:4"]
+              when "1xA100"
+                base_slurm_args + ["--gpus-per-node", "A100:1"]
+              when "2xA100"
+                base_slurm_args + ["--gpus-per-node", "A100:2"]
+              when "3xA100"
+                base_slurm_args + ["--gpus-per-node", "A100:3"]
+              when "4xA100"
+                base_slurm_args + ["--gpus-per-node", "A100:4"]
+              end
+-%>
+
 ---
 batch_connect:
   template: vnc
+script:
+  native:
+    <%- slurm_args.each do |arg| %>
+    - "<%= arg %>"
+    <%- end %>
