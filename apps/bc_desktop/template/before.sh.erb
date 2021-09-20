@@ -1,2 +1,9 @@
 # Export the module function if it exists
 [[ $(type -t module) == "function" ]] && export -f module
+
+if [[ -z "$VGL_DISPLAY" ]]; then
+    export VGL_DISPLAY=egl
+fi
+
+export WEBSOCKIFY_CMD=websockify
+PATH=$PATH:/opt/TurboVNC/bin
