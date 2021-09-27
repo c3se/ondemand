@@ -214,10 +214,10 @@ class Workflow < ApplicationRecord
   # end
 
   def accounts_by_user
-    IO.popen('cat /home/ood/sacctmgr.txt') { |cmd|
+    IO.popen('sacctmgr -np show accounts withassoc format=account,user') { |cmd|
       cmd.map { |line|
         acc = line.split('|')
-        acc[0] if acc[2] == Etc.getlogin
+        acc[0] if acc[1] == Etc.getlogin
       }.compact
     }
   end
