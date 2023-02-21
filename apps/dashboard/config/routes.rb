@@ -46,6 +46,8 @@ Rails.application.routes.draw do
       root "session_contexts#new"
     end
   end
+  # Diskquota is for https://github.com/c3se/ood_dashboard_diskquota
+  get "diskquota", to: "disk_quota#index"
   get "errors/not_found"
   get "errors/internal_server_error"
   get "dashboard/index"
