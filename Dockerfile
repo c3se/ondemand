@@ -6,7 +6,7 @@ ARG CONCURRENCY=4
 ENV PYTHON=/usr/libexec/platform-python
 
 # setup the ondemand repositories
-RUN dnf -y install https://yum.osc.edu/ondemand/latest/ondemand-release-web-latest-1-6.noarch.rpm
+RUN dnf -y install https://yum.osc.edu/ondemand/3.0/ondemand-release-web-3.0-1.noarch.rpm
 
 # install all the dependencies
 RUN dnf -y update && \
@@ -23,13 +23,14 @@ RUN dnf -y update && \
         patch \
         lua-posix \
         rsync \
+        attr \
+        python3 \
         ondemand-gems \
         ondemand-runtime \
         ondemand-build \
         ondemand-apache \
         ondemand-ruby \
         ondemand-nodejs \
-        ondemand-python \
         ondemand-dex \
         ondemand-passenger \
         ondemand-nginx && \
@@ -69,6 +70,22 @@ RUN touch /var/lib/ondemand-nginx/config/apps/sys/{dashboard,shell,myjobs}.conf
 RUN echo -e 'Defaults:apache !requiretty, !authenticate \n\
 Defaults:apache env_keep += "NGINX_STAGE_* OOD_*" \n\
 apache ALL=(ALL) NOPASSWD: /opt/ood/nginx_stage/sbin/nginx_stage' >/etc/sudoers.d/ood
+
+# sssd for LDAP user database support
+RUN dnf install -y sssd
+
+# Install local slurm packages
+RUN useradd slurm
+RUN printf '[c3se-slurm]\nbaseurl = http://janne.c3se.chalmers.se/repo/common8/alvis/slurm\nenabled = 1\ngpgcheck = 0\nname = c3se-slurm' >  /etc/yum.repos.d/slurm.repo
+RUN printf '[c3se-epel]\nbaseurl = http://janne.c3se.chalmers.se/repo/common8/epel\nenabled = 1\ngpgcheck = 0\nname = c3se-epel' >  /etc/yum.repos.d/epel.repo
+RUN dnf install -y slurm
+
+# Install shibboleth and mod_shib
+RUN printf '[shibboleth]\ntype=rpm-md\nmirrorlist=https://shibboleth.net/cgi-bin/mirrorlist.cgi/CentOS_8\nenabled = 1\ngpgcheck = 0\nname=Shibboleth (CentOS_8)' >  /etc/yum.repos.d/shibboleth.repo
+RUN dnf install -y shibboleth.x86_64
+
+# Clean dnf cache
+RUN dnf clean all && rm -rf /var/cache/dnf/*
 
 # run the OOD executables to setup the env
 RUN /opt/ood/ood-portal-generator/sbin/update_ood_portal --insecure

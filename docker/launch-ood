@@ -3,5 +3,13 @@
 set -e
 
 /opt/ood/ood-portal-generator/sbin/update_ood_portal --force --insecure
-runuser -u ondemand-dex /usr/sbin/ondemand-dex serve /etc/ood/dex/config.yaml &
+#runuser -u ondemand-dex /usr/sbin/ondemand-dex serve /etc/ood/dex/config.yaml &
+
+chown sssd:sssd -R /etc/sssd/conf.d
+chmod go-rw -R /etc/sssd/
+chown root:ssh_keys /etc/ssh/ssh_host*key
+
+/usr/sbin/sssd --logger=stderr -D
+/usr/sbin/shibd -f
+
 /usr/sbin/httpd -DFOREGROUND
